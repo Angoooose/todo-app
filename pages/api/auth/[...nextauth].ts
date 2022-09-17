@@ -5,6 +5,15 @@ import prisma from '@lib/prisma';
 
 export default NextAuth({
 	adapter: PrismaAdapter(prisma),
+	callbacks: {
+		async jwt({ token, user }) {
+			if (user) {
+				token.userId = user.id;
+			}
+
+			return token;
+		}
+	},
 	providers: [
 		CredentialsProvider({
 			name: 'Credentials',
@@ -24,12 +33,12 @@ export default NextAuth({
 					},
 					select: {
 						id: true,
-						createdAt: true,
+						createdAt: false,
 						email: true,
 						password: false,
 					}
 				});
-
+				
 				if (user) {
 					return user;
 				} else {
@@ -41,4 +50,5 @@ export default NextAuth({
 	session: {
 		strategy: 'jwt',
 	},
+	secret: process.env.NEXTAUTH_SECRET,
 });

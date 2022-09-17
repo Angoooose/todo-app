@@ -15,3 +15,14 @@ model User {
 
     @@map(name: "users")
 }
+
+model Task {
+    id          String   @id @default(cuid())
+    ownerId     String   @map(name: "owner_id")
+    createdAt   DateTime @default(now()) @map(name: "created_at")
+    complete    Boolean  @default(false)
+    title       String
+    description String?
+
+    @@map(name: "tasks")
+}
