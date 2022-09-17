@@ -2,6 +2,7 @@ import { Button } from '@components/common';
 import { TaskCard } from '@components/TaskCard';
 import useTasks from '@hooks/useTasks';
 import fetcher from '@lib/fetcher';
+import { Task } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { NextPage } from 'next';
 import { FormEvent, useState } from 'react';
@@ -32,6 +33,15 @@ const Home: NextPage = () => {
 		});
 	}
 
+	const handleUpdate = (id: string, data: Partial<Task>) => {
+		fetcher.patch('/api/tasks/update', {
+			taskId: id,
+			data,
+		}).then(() => {
+			mutate();
+		});
+	}
+
 	return (
 		<div className="max-w-lg m-auto flex flex-col items-center justify-center py-4">
 			<AnimatePresence mode="popLayout">
@@ -47,7 +57,12 @@ const Home: NextPage = () => {
 					</motion.div>
 				</motion.form>
 				{tasks?.map((task) => (
-					<TaskCard task={task} onDelete={() => handleDelete(task.id)} key={task.id}/>
+					<TaskCard
+						task={task}
+						onDelete={() => handleDelete(task.id)}
+						onComplete={() => handleUpdate(task.id, { complete: !task.complete })}
+						key={task.id}
+					/>
 				))}
 			</AnimatePresence>
 		</div>

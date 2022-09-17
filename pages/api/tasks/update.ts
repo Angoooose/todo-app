@@ -8,12 +8,24 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	if (!token) {
 		return res.status(401).end();
 	}
+
+	if (!req.body.taskId || !req.body.data) {
+		return res.status(400).end();
+	}
+
+	if (req.body.createdAt) {
+		req.body.createdAt = undefined;
+	}
 	
-	const tasks = await prisma.task.findMany({
+	await prisma.task.updateMany({
 		where: {
+			id: req.body.taskId as string,
 			ownerId: token.userId,
+		},
+		data: {
+			...req.body.data,
 		}
 	});
 
-	return res.status(200).send(tasks.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()));
+	return res.status(200).end();
 }

@@ -7,15 +7,15 @@ import { TrashIcon } from '@heroicons/react/24/solid';
 interface TaskCardProps {
 	task: Task;
 	onDelete: () => any;
+	onComplete: () => any;
 }
 
-export const TaskCard: FC<TaskCardProps> = ({ onDelete, task }) => {
+export const TaskCard: FC<TaskCardProps> = ({ onDelete, onComplete, task }) => {
 	const [isHovered, setIsHovered] = useState<boolean>(false);
-	const [checked, setChecked] = useState<boolean>(false);
 
 	return (
 		<motion.div
-			className="flex items-center p-3 my-1 w-full h-14 bg-zinc-900 rounded-md shadow-md"
+			className="flex items-center p-3 my-1 w-full h-14 bg-zinc-900 rounded-md shadow-md select-none"
 			onMouseOver={() => setIsHovered(true)} 
 			onMouseOut={() => setIsHovered(false)}
 			initial={{ y: 15, opacity: 0 }}
@@ -25,11 +25,13 @@ export const TaskCard: FC<TaskCardProps> = ({ onDelete, task }) => {
 			layout
 		>
 			<Checkbox
-				isChecked={checked}
-				onCheck={(c) => setChecked(c)}
+				isChecked={task.complete}
+				onCheck={onComplete}
 				className="mr-3"
 			/>
-			{task.title}
+			<div className={task.complete ? 'opacity-50 line-through transition-opacity' : 'transition-opacity'}>
+				{task.title}
+			</div>
 			<AnimatePresence>
 				{isHovered && (
 					<motion.div className="flex items-start ml-auto" transition={{ type: 'spring' }} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }}>
