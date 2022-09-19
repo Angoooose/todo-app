@@ -54,17 +54,17 @@ const Home: NextPage = () => {
 			</div>
 
 			<AnimatePresence mode="popLayout">
-				<motion.form className="bg-zinc-900 p-2 mb-1 flex items-center w-full rounded-md shadow-md" onSubmit={handleCreate}>
+				<form className="bg-zinc-900 p-2 mb-1 flex items-center w-full rounded-md shadow-md" onSubmit={handleCreate}>
 					<input
 						placeholder="New Task"
 						className="appearance-none outline-none bg-transparent grow pl-1"
 						value={taskTitle}
 						onChange={(e) => setTaskTitle(e.target.value)}
 					/>
-					<motion.div transition={{ type: 'spring' }} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} layout>
+					<motion.div transition={{ type: 'spring' }} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} whileTap={{ scale: 0.85 }}>
 						<Button className="px-5" disabled={taskTitle === '' || !taskTitle}>Create</Button>
 					</motion.div>
-				</motion.form>
+				</form>
 				{tasks?.map((task) => (
 					<TaskCard
 						task={task}
