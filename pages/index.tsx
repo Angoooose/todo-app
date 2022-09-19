@@ -46,7 +46,13 @@ const Home: NextPage = () => {
 	}
 
 	return (
-		<div className="max-w-lg m-auto flex flex-col items-center justify-center py-4">
+		<div className="max-w-lg m-auto flex flex-col items-center justify-center py-4 px-2">
+			<div className="flex justify-center items-center w-full mb-4">
+				<hr className="w-full border-zinc-700"/>
+				<h1 className="font-bold text-2xl whitespace-nowrap mx-4">todo-app</h1>
+				<hr className="w-full border-zinc-700"/>
+			</div>
+
 			<AnimatePresence mode="popLayout">
 				<motion.form className="bg-zinc-900 p-2 mb-1 flex items-center w-full rounded-md shadow-md" onSubmit={handleCreate}>
 					<input
@@ -69,7 +75,7 @@ const Home: NextPage = () => {
 					/>
 				))}
 			</AnimatePresence>
-
+			
 			<AnimatePresence mode="popLayout">
 				{selectedTask && (
 					<motion.div
