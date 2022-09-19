@@ -17,10 +17,11 @@ model User {
 }
 
 model Task {
-    id          String   @id @default(cuid())
-    ownerId     String   @map(name: "owner_id")
-    createdAt   DateTime @default(now()) @map(name: "created_at")
-    complete    Boolean  @default(false)
+    id          String    @id @default(cuid())
+    ownerId     String    @map(name: "owner_id")
+    createdAt   DateTime  @default(now()) @map(name: "created_at")
+    complete    Boolean   @default(false)
+    completedAt DateTime? @map(name: "completed_at")
     title       String
     description String?
 

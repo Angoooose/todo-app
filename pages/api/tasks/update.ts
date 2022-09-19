@@ -16,6 +16,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.body.createdAt) {
 		req.body.createdAt = undefined;
 	}
+
+	if (req.body.data.complete) {
+		req.body.data.completedAt = new Date();
+	}
 	
 	await prisma.task.updateMany({
 		where: {

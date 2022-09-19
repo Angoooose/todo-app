@@ -1,6 +1,7 @@
 import { CheckIcon, ClockIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useDebounce } from '@hooks/useDebounce';
 import fetcher from '@lib/fetcher';
+import { getTimestamp } from '@lib/time';
 import { Task } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Dispatch, FC, PropsWithChildren, useEffect, useState } from 'react';
@@ -52,12 +53,12 @@ export const TaskModal: FC<TaskModalProps> = ({ task, setSelectedTask, mutate })
 			<div className="flex items-center mb-2">
 				<Tag textColor={'text-violet-400'}>
 					<ClockIcon height={15} width={15} className="mr-1"/>
-					{new Date(task.createdAt).toDateString()}
+					Created on {getTimestamp(task.createdAt)}
 				</Tag>
-				{task.complete ? (
+				{(task.complete && task.completedAt) ? (
 					<Tag textColor={'text-green-400'}>
 						<CheckIcon height={15} width={15} className="mr-1"/>
-						Complete
+						Complete on {getTimestamp(task.completedAt)}
 					</Tag>
 				) : (
 					<Tag textColor={'text-red-400'}>
@@ -90,7 +91,7 @@ interface TagProps extends PropsWithChildren {
 
 const Tag: FC<TagProps> = ({ textColor, children }) => {
 	return (
-		<div className={`flex items-center py-0.5 px-1 mx-1 first:ml-0 rounded-sm bg-zinc-800 uppercase text-sm ${textColor}`}>
+		<div className={`flex items-center py-0.5 px-1 mx-1 first:ml-0 rounded-sm bg-zinc-800 text-sm ${textColor}`}>
 			{children}
 		</div>
 	);
