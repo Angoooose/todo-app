@@ -1,5 +1,6 @@
 import { Button } from '@components/common';
 import { TaskCard } from '@components/TaskCard';
+import { TaskModal } from '@components/TaskModal';
 import useTasks from '@hooks/useTasks';
 import fetcher from '@lib/fetcher';
 import { Task } from '@prisma/client';
@@ -9,6 +10,8 @@ import { FormEvent, useState } from 'react';
 
 const Home: NextPage = () => {
 	const [taskTitle, setTaskTitle] = useState<string>();
+
+	const [selectedTask, setSelectedTask] = useState<Task>();
 
 	const { tasks, mutate } = useTasks();
 
@@ -61,9 +64,23 @@ const Home: NextPage = () => {
 						task={task}
 						onDelete={() => handleDelete(task.id)}
 						onComplete={() => handleUpdate(task.id, { complete: !task.complete })}
+						onSelect={() => setSelectedTask(selectedTask?.id === task.id ? undefined : task)}
 						key={task.id}
 					/>
 				))}
+			</AnimatePresence>
+
+			<AnimatePresence mode="popLayout">
+				{selectedTask && (
+					<motion.div
+						className="absolute bg-zinc-900 bg-opacity-75 top-0 left-0 h-screen w-screen z-10"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ type: 'keyframes' }}
+						onClick={() => setSelectedTask(undefined)}
+					/>
+				)}
+				{selectedTask && <TaskModal task={selectedTask} setSelectedTask={setSelectedTask} mutate={mutate}/>}
 			</AnimatePresence>
 		</div>
 	);

@@ -22,7 +22,7 @@ export const IconButton: FC<IconButtonProps> = ({ buttonColor, ...props }) => {
 	console.log(color);
 
 	return (
-		<button {...props} className={`appearance-none p-2 text-${color}-500 bg-zinc-800 hover:bg-red-500 hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm rounded-lg` + ' ' + props.className}>
+		<button {...props} className={`appearance-none p-2 text-${color}-500 bg-zinc-800 hover:bg-${color}-500 hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm rounded-lg` + ' ' + props.className}>
 			{props.children}
 		</button>
 	);
