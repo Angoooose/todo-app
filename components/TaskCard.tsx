@@ -23,16 +23,27 @@ export const TaskCard: FC<TaskCardProps> = ({ onDelete, onComplete, onSelect, ta
 			animate={{ y: 0, scale: 1, opacity: 1 }}
 			exit={{ scale: 0.8, opacity: 0 }}
 			transition={{ type: 'spring', damping: 15 }}
-			layout
 			layoutId={task.id}
+			layout
 		>
 			<Checkbox
 				isChecked={task.complete}
 				onCheck={onComplete}
 				className="mr-3"
 			/>
-			<div className={task.complete ? 'opacity-50 line-through transition-opacity' : 'transition-opacity'}>
+			<div className={`transition-opacity flex items-center relative ${task.complete ? 'opacity-50' : ''}`}>
 				{task.title}
+				<AnimatePresence>
+					{task.complete && (
+						<motion.hr
+							className="absolute"
+							initial={{ width: 0 }}
+							animate={{ width: '100%' }}
+							exit={{ width: 0 }}
+							transition={{ duration: 0.5 }}
+						/>
+					)}
+				</AnimatePresence>
 			</div>
 			<AnimatePresence>
 				{isHovered && (
