@@ -37,10 +37,10 @@ export const TaskCard: FC<TaskCardProps> = ({ onDelete, onComplete, onSelect, ta
 			<AnimatePresence>
 				{isHovered && (
 					<motion.div className="flex items-start ml-auto" transition={{ type: 'spring' }} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }}>
-						<IconButton buttonColor='red' onClick={onDelete}>
+						<IconButton className="text-red-500 hover:bg-red-500" onClick={onDelete}>
 							<TrashIcon height={18} width={18}/>
 						</IconButton>
-						<IconButton buttonColor='blue' onClick={onSelect} className="ml-1">
+						<IconButton className="text-blue-500 hover:bg-blue-500 ml-1" onClick={onSelect}>
 							<ArrowsPointingOutIcon height={18} width={18}/>
 						</IconButton>
 					</motion.div>
