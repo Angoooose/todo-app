@@ -1,4 +1,5 @@
 import { Button, Input } from '@components/common';
+import { useEphemeral } from '@hooks/useEphemeral';
 import fetcher from '@lib/fetcher';
 import { motion } from 'framer-motion';
 import { NextPage } from 'next';
@@ -10,6 +11,7 @@ const Auth: NextPage = () => {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [authType, setAuthType] = useState<'login'|'create'>('login');
+	const [error, setError] = useEphemeral<string>(2500);
 
 	const router = useRouter();
 
@@ -28,6 +30,8 @@ const Auth: NextPage = () => {
 				password, 
 			}).then(() => {
 				handleSignIn();
+			}).catch(() => {
+				setError('User Already Exists');
 			});
 		}
 	}
@@ -37,10 +41,14 @@ const Auth: NextPage = () => {
 			redirect: false,
 			email,
 			password,
-		}).then(() => {
-			router.push('/');
+		}).then(({ ok, error }: any) => {
+			if (ok) {
+				router.push('/');
+			} else {
+				setError(error);
+			}
 		});
-	}
+	} 
 
 	return (
 		<div className="p-6 bg-zinc-900 flex flex-col max-w-sm m-auto translate-y-1/3 rounded-md shadow-md">
@@ -61,15 +69,19 @@ const Auth: NextPage = () => {
 				</div>
 				<Input placeholder="Email" className="my-1" onChange={(e) => setEmail(e.target.value)}/>
 				<Input placeholder="Password" className="my-1" type="password" onChange={(e) => setPassword(e.target.value)}/>
-				<Button className="mt-3" type="submit" disabled={!email || !password || email === '' || password === ''}>
+				<Button className={`mt-3 ${error ? 'bg-red-500 hover:bg-red-600' : ''}`} type="submit" disabled={!email || !password || email === '' || password === ''}>
 					<motion.div
-						key={authType}
+						key={authType + error}
 						initial={{ y: 10, opacity: 0 }}
 						animate={{ y: 0, opacity: 1 }}
 						exit={{ y: -10, opacity: 0 }}
 						transition={{ duration: 0.2 }}
 					>
-						{authType === 'login' ? 'Login' : 'Create Account'}
+						{!error ? (
+							authType === 'login' ? 'Login' : 'Create Account'
+						) : (
+							error
+						)}
 					</motion.div>
 				</Button>
 			</form>
