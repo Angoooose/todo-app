@@ -1,6 +1,7 @@
 import { CheckIcon } from '@heroicons/react/24/solid';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FC } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface CheckboxProps {
 	isChecked: boolean;
@@ -10,7 +11,7 @@ interface CheckboxProps {
 
 export const Checkbox: FC<CheckboxProps> = ({ isChecked, onCheck, className }) => {
 	return (
-		<div className={'flex justify-center items-center cursor-pointer' + ' ' + className}>
+		<div className={twMerge('flex justify-center items-center cursor-pointer', className)}>
 			<input
 				checked={isChecked}
 				onChange={() => onCheck(!isChecked)}
