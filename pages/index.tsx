@@ -1,4 +1,5 @@
 import { Button } from '@components/common';
+import { LoadingPage } from '@components/LoadingPage';
 import { TaskCard } from '@components/TaskCard';
 import { TaskModal } from '@components/TaskModal';
 import useTasks from '@hooks/useTasks';
@@ -6,13 +7,23 @@ import fetcher from '@lib/fetcher';
 import { Task } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { NextPage } from 'next';
-import { FormEvent, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { FormEvent, useEffect, useState } from 'react';
 
 const Home: NextPage = () => {
 	const [taskTitle, setTaskTitle] = useState<string>();
 	const [selectedTask, setSelectedTask] = useState<Task>();
 
 	const { tasks, mutate } = useTasks();
+	const { status } = useSession();
+	const router = useRouter();
+
+	useEffect(() => {
+		if (status === 'unauthenticated') {
+			router.push('/auth');
+		}
+	}, [status]);
 
 	const handleCreate = (e: FormEvent) => {
 		e.preventDefault();
@@ -43,6 +54,8 @@ const Home: NextPage = () => {
 			mutate();
 		});
 	}
+
+	if (status !== 'authenticated') return <LoadingPage/>;
 
 	return (
 		<div className="max-w-lg m-auto flex flex-col items-center justify-center py-4 px-2">
