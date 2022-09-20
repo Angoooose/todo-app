@@ -2,6 +2,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import NextAuth from 'next-auth';
 import prisma from '@lib/prisma';
+import { compare } from 'bcrypt';
 
 export default NextAuth({
 	adapter: PrismaAdapter(prisma),
@@ -25,21 +26,17 @@ export default NextAuth({
 			authorize: async (credentials) => {
 				if (!credentials?.email || !credentials?.password) throw new Error('Bad request');
 
-				// Will improve later
 				const user = await prisma.user.findFirst({
 					where: {
 						email: credentials?.email,
-						password: credentials?.password,
 					},
-					select: {
-						id: true,
-						createdAt: false,
-						email: true,
-						password: false,
-					}
 				});
+
+				if (!user) throw new Error('Failed to authenticate');
+
+				const isPasswordValid = await compare(credentials.password, user.password);
 				
-				if (user) {
+				if (isPasswordValid) {
 					return user;
 				} else {
 					throw new Error('Failed to authenticate');

@@ -10,7 +10,6 @@ import { FormEvent, useState } from 'react';
 
 const Home: NextPage = () => {
 	const [taskTitle, setTaskTitle] = useState<string>();
-
 	const [selectedTask, setSelectedTask] = useState<Task>();
 
 	const { tasks, mutate } = useTasks();
