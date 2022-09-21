@@ -1,18 +1,21 @@
-import { Checkbox, IconButton } from '@components/common';
+import { Checkbox, IconButton, Input } from '@components/common';
 import { Task } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FC, useState } from 'react';
-import { ArrowsPointingOutIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowsPointingOutIcon, CheckIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
 interface TaskCardProps {
 	task: Task;
 	onDelete: () => any;
 	onComplete: () => any;
 	onSelect: () => any;
+	onEdit: (newTitle: string) => Promise<any>;
 }
 
-export const TaskCard: FC<TaskCardProps> = ({ onDelete, onComplete, onSelect, task }) => {
+export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSelect, onEdit }) => {
 	const [isHovered, setIsHovered] = useState<boolean>(false);
+	const [isEdit, setIsEdit] = useState<boolean>(false);
+	const [updatedTitle, setUpdatedTitle] = useState<string>(task.title);
 
 	return (
 		<motion.div
@@ -26,35 +29,64 @@ export const TaskCard: FC<TaskCardProps> = ({ onDelete, onComplete, onSelect, ta
 			layoutId={task.id}
 			layout
 		>
-			<Checkbox
-				isChecked={task.complete}
-				onCheck={onComplete}
-				className="mr-3"
-			/>
-			<div className={`transition-opacity flex items-center relative ${task.complete ? 'opacity-50' : ''}`}>
-				{task.title}
-				<AnimatePresence>
-					{task.complete && (
-						<motion.hr
-							className="absolute"
-							initial={{ width: 0 }}
-							animate={{ width: '100%' }}
-							exit={{ width: 0 }}
-							transition={{ duration: 0.5 }}
-						/>
-					)}
-				</AnimatePresence>
-			</div>
+			{!isEdit ? (
+				<>
+					<Checkbox
+						isChecked={task.complete}
+						onCheck={onComplete}
+						className="mr-3"
+					/>
+					<div className={`transition-opacity flex items-center relative whitespace-nowrap overflow-hidden text-ellipsis ${task.complete ? 'opacity-50' : ''}`}>
+						{task.title}
+						<AnimatePresence>
+							{task.complete && (
+								<motion.hr
+									className="absolute"
+									initial={{ width: 0 }}
+									animate={{ width: '100%' }}
+									exit={{ width: 0 }}
+									transition={{ duration: 0.5 }}
+								/>
+							)}
+						</AnimatePresence>
+					</div>
+				</>
+			) : (
+				<Input
+					className="py-1 w-full mr-2"
+					placeholder="Task Title"
+					value={updatedTitle}
+					onChange={(e) => setUpdatedTitle(e.target.value)}
+				/>
+			)}
 			<AnimatePresence>
-				{isHovered && (
+				{(isHovered && !isEdit) && (
 					<motion.div className="flex items-start ml-auto" transition={{ type: 'spring' }} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }}>
 						<IconButton className="text-red-500 hover:bg-red-500" onClick={onDelete}>
 							<TrashIcon height={18} width={18}/>
+						</IconButton>
+						<IconButton className="text-green-400 hover:bg-green-400 ml-1" onClick={() => setIsEdit(true)}>
+							<PencilIcon height={18} width={18}/>
 						</IconButton>
 						<IconButton className="text-blue-500 hover:bg-blue-500 ml-1" onClick={onSelect}>
 							<ArrowsPointingOutIcon height={18} width={18}/>
 						</IconButton>
 					</motion.div>
+				)}
+
+				{isEdit && (
+					<div className="flex items-center ml-auto">
+						<IconButton className="text-red-500 hover:bg-red-500" onClick={() => setIsEdit(false)}>
+							<XMarkIcon height={18} width={18}/>
+						</IconButton>
+						<IconButton
+							className="text-green-400 hover:bg-green-400 ml-1"
+							onClick={() => onEdit(updatedTitle).then(() => setIsEdit(false))}
+							disabled={updatedTitle === task.title || updatedTitle === ''}
+						>
+							<CheckIcon height={18} width={18}/>
+						</IconButton>
+					</div>
 				)}
 			</AnimatePresence>
 		</motion.div>

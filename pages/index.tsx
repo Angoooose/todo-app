@@ -46,8 +46,8 @@ const Home: NextPage = () => {
 		});
 	}
 
-	const handleUpdate = (id: string, data: Partial<Task>) => {
-		fetcher.patch('/api/tasks/update', {
+	const handleUpdate = async (id: string, data: Partial<Task>) => {
+		return await fetcher.patch('/api/tasks/update', {
 			taskId: id,
 			data,
 		}).then(() => {
@@ -83,6 +83,7 @@ const Home: NextPage = () => {
 						onDelete={() => handleDelete(task.id)}
 						onComplete={() => handleUpdate(task.id, { complete: !task.complete })}
 						onSelect={() => setSelectedTask(selectedTask?.id === task.id ? undefined : task)}
+						onEdit={(newTitle) => handleUpdate(task.id, { title: newTitle })}
 						key={task.id}
 					/>
 				))}
