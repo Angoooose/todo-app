@@ -1,5 +1,6 @@
 import { CheckIcon, ClockIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useDebounce } from '@hooks/useDebounce';
+import { useEphemeral } from '@hooks/useEphemeral';
 import fetcher from '@lib/fetcher';
 import { getTimestamp } from '@lib/time';
 import { Task } from '@prisma/client';
@@ -14,7 +15,7 @@ interface TaskModalProps {
 
 export const TaskModal: FC<TaskModalProps> = ({ task, setSelectedTask, mutate }) => {
 	const [description, setDescription] = useState<string>(task.description || '');
-	const [isSaved, setIsSaved] = useState<boolean>(false);
+	const [isSaved, setIsSaved] = useEphemeral<boolean>(1500);
 
 	const debouncedDescription = useDebounce(description, 500);
 
@@ -28,16 +29,13 @@ export const TaskModal: FC<TaskModalProps> = ({ task, setSelectedTask, mutate })
 			}).then(() => {
 				mutate();
 				setIsSaved(true);
-				setTimeout(() => {
-					setIsSaved(false);
-				}, 1500);
 			});
 		}
 	}, [debouncedDescription]);
 
 	return (
 		<motion.div
-			className="bg-zinc-900 absolute w-full max-w-2xl h-80 z-20 p-4 rounded-md border border-zinc-800"
+			className="bg-zinc-900 absolute w-full max-w-2xl h-80 z-20 p-4 mt-20 rounded-md border border-zinc-800"
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0, transition: { duration: 0.15 } }}
