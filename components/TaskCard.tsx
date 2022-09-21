@@ -17,6 +17,13 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSele
 	const [isEdit, setIsEdit] = useState<boolean>(false);
 	const [updatedTitle, setUpdatedTitle] = useState<string>(task.title);
 
+	const contentAnimations = {
+		initial: { y: 20, opacity: 0 },
+		animate: { y: 0, opacity: 1 },
+		exit: { y: -20, opacity: 0 },
+		transition: { duration: 0.3 },
+	}
+
 	return (
 		<motion.div
 			className="flex items-center p-3 my-1 w-full h-14 bg-zinc-900 rounded-md shadow-md select-none"
@@ -29,36 +36,47 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSele
 			layoutId={task.id}
 			layout
 		>
-			{!isEdit ? (
-				<>
-					<Checkbox
-						isChecked={task.complete}
-						onCheck={onComplete}
-						className="mr-3"
-					/>
-					<div className={`transition-opacity flex items-center relative whitespace-nowrap overflow-hidden text-ellipsis ${task.complete ? 'opacity-50' : ''}`}>
-						{task.title}
-						<AnimatePresence>
-							{task.complete && (
-								<motion.hr
-									className="absolute"
-									initial={{ width: 0 }}
-									animate={{ width: '100%' }}
-									exit={{ width: 0 }}
-									transition={{ duration: 0.5 }}
-								/>
-							)}
-						</AnimatePresence>
-					</div>
-				</>
-			) : (
-				<Input
-					className="py-1 w-full mr-2"
-					placeholder="Task Title"
-					value={updatedTitle}
-					onChange={(e) => setUpdatedTitle(e.target.value)}
-				/>
-			)}
+			<AnimatePresence>
+				{!isEdit ? (
+					<motion.div
+						key={`content-${isEdit}`}
+						className="flex absolute"
+						{...contentAnimations}
+					>
+						<Checkbox
+							isChecked={task.complete}
+							onCheck={onComplete}
+							className="mr-3"
+						/>
+						<div className={`transition-opacity flex items-center relative whitespace-nowrap overflow-hidden text-ellipsis ${task.complete ? 'opacity-50' : ''}`}>
+							{task.title}
+							<AnimatePresence>
+								{task.complete && (
+									<motion.hr
+										className="absolute"
+										initial={{ width: 0 }}
+										animate={{ width: '100%' }}
+										exit={{ width: 0 }}
+										transition={{ duration: 0.3 }}
+									/>
+								)}
+							</AnimatePresence>
+						</div>
+					</motion.div>
+				) : (
+					<motion.div
+						className="flex w-full"
+						{...contentAnimations}
+					>
+						<Input
+							className="py-1 w-full mr-2"
+							placeholder="Task Title"
+							value={updatedTitle}
+							onChange={(e) => setUpdatedTitle(e.target.value)}
+						/>
+					</motion.div>
+				)}
+			</AnimatePresence>
 			<AnimatePresence>
 				{(isHovered && !isEdit) && (
 					<motion.div className="flex items-start ml-auto" transition={{ type: 'spring' }} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }}>
