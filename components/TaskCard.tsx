@@ -26,7 +26,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSele
 
 	return (
 		<motion.div
-			className="flex items-center p-3 my-1 w-full h-14 bg-zinc-900 rounded-md shadow-md select-none"
+			className="flex items-center p-3 my-1 w-full h-14 bg-zinc-900 rounded-md shadow-md select-none overflow-hidden relative"
 			onMouseOver={() => setIsHovered(true)} 
 			onMouseOut={() => setIsHovered(false)}
 			initial={{ y: 15, opacity: 0 }}
@@ -40,7 +40,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSele
 				{!isEdit ? (
 					<motion.div
 						key={`content-${isEdit}`}
-						className="flex absolute"
+						className="flex absolute w-full"
 						{...contentAnimations}
 					>
 						<Checkbox
@@ -79,7 +79,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSele
 			</AnimatePresence>
 			<AnimatePresence>
 				{(isHovered && !isEdit) && (
-					<motion.div className="flex items-start ml-auto" transition={{ type: 'spring' }} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }}>
+					<motion.div className="flex items-start ml-auto bg-zinc-900 z-10" transition={{ type: 'spring' }} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }}>
 						<IconButton className="text-red-500 hover:bg-red-500" onClick={onDelete}>
 							<TrashIcon height={18} width={18}/>
 						</IconButton>
