@@ -1,7 +1,7 @@
 import { Checkbox, IconButton, Input } from '@components/common';
 import { Task } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FC, useState } from 'react';
+import { FC, useState, KeyboardEvent } from 'react';
 import { ArrowsPointingOutIcon, CheckIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
 interface TaskCardProps {
@@ -22,6 +22,12 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSele
 		animate: { y: 0, opacity: 1 },
 		exit: { y: -20, opacity: 0 },
 		transition: { duration: 0.3 },
+	}
+
+	const handleSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter' && isEdit && updatedTitle !== task.title) {
+			onEdit(updatedTitle).then(() => setIsEdit(false));
+		}
 	}
 
 	return (
@@ -73,6 +79,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSele
 							placeholder="Task Title"
 							value={updatedTitle}
 							onChange={(e) => setUpdatedTitle(e.target.value)}
+							onKeyDown={handleSubmit}
 						/>
 					</motion.div>
 				)}
