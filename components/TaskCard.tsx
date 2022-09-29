@@ -1,7 +1,7 @@
 import { Checkbox, IconButton, Input } from '@components/common';
 import { Task } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FC, useState, KeyboardEvent } from 'react';
+import { FC, useState, KeyboardEvent, useRef, useEffect } from 'react';
 import { ArrowsPointingOutIcon, CheckIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
 interface TaskCardProps {
@@ -16,6 +16,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSele
 	const [isHovered, setIsHovered] = useState<boolean>(false);
 	const [isEdit, setIsEdit] = useState<boolean>(false);
 	const [updatedTitle, setUpdatedTitle] = useState<string>(task.title);
+	const inputRef = useRef<HTMLInputElement>(null);
 
 	const contentAnimations = {
 		initial: { y: 20, opacity: 0 },
@@ -29,6 +30,14 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSele
 			onEdit(updatedTitle).then(() => setIsEdit(false));
 		}
 	}
+
+	useEffect(() => {
+		if (isEdit) {
+			setTimeout(() => {
+				inputRef?.current?.focus();
+			}, 200);
+		}
+	}, [isEdit]);
 
 	return (
 		<motion.div
@@ -80,6 +89,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onDelete, onComplete, onSele
 							value={updatedTitle}
 							onChange={(e) => setUpdatedTitle(e.target.value)}
 							onKeyDown={handleSubmit}
+							ref={inputRef}
 						/>
 					</motion.div>
 				)}
