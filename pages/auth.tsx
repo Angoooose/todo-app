@@ -12,6 +12,7 @@ const Auth: NextPage = () => {
 	const [password, setPassword] = useState<string>('');
 	const [authType, setAuthType] = useState<'login'|'create'>('login');
 	const [error, setError] = useEphemeral<string>(2500);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const router = useRouter();
 
@@ -21,6 +22,8 @@ const Auth: NextPage = () => {
 		if (!email || !password || email === '' || password === '') {
 			return;
 		}
+
+		setIsLoading(true);
 
 		if (authType === 'login') {
 			handleSignIn();
@@ -32,6 +35,8 @@ const Auth: NextPage = () => {
 				handleSignIn();
 			}).catch(() => {
 				setError('User Already Exists');
+			}).finally(() => {
+				setIsLoading(false);
 			});
 		}
 	}
@@ -47,6 +52,8 @@ const Auth: NextPage = () => {
 			} else {
 				setError(error);
 			}
+		}).finally(() => {
+			setIsLoading(false);
 		});
 	} 
 
@@ -69,16 +76,20 @@ const Auth: NextPage = () => {
 				</div>
 				<Input placeholder="Email" className="my-1" onChange={(e) => setEmail(e.target.value)}/>
 				<Input placeholder="Password" className="my-1" type="password" onChange={(e) => setPassword(e.target.value)}/>
-				<Button className={`mt-3 ${error ? 'bg-red-500 hover:bg-red-600' : ''}`} type="submit" disabled={!email || !password || email === '' || password === ''}>
+				<Button className={`mt-3 ${error ? 'bg-red-500 hover:bg-red-600' : ''}`} type="submit" disabled={!email || !password || email === '' || password === '' || isLoading}>
 					<motion.div
-						key={authType + error}
+						key={authType + error + isLoading}
 						initial={{ y: 10, opacity: 0 }}
 						animate={{ y: 0, opacity: 1 }}
 						exit={{ y: -10, opacity: 0 }}
 						transition={{ duration: 0.2 }}
 					>
 						{!error ? (
-							authType === 'login' ? 'Login' : 'Create Account'
+							isLoading ? (
+								'Loading'
+							) : (
+								authType === 'login' ? 'Login' : 'Create Account'
+							)
 						) : (
 							error
 						)}

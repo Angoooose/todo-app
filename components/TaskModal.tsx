@@ -35,7 +35,7 @@ export const TaskModal: FC<TaskModalProps> = ({ task, setSelectedTask, mutate })
 
 	return (
 		<motion.div
-			className="bg-zinc-900 absolute w-full max-w-2xl h-80 z-20 p-4 mt-20 rounded-md border border-zinc-800"
+			className="bg-zinc-900 absolute top-5 w-full max-w-2xl h-80 z-20 p-4 rounded-md border border-zinc-800"
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0, transition: { duration: 0.15 } }}
@@ -73,7 +73,7 @@ export const TaskModal: FC<TaskModalProps> = ({ task, setSelectedTask, mutate })
 			/>
 			<AnimatePresence>
 				{isSaved && (
-					<motion.div className="text-green-400 text-sm flex items-center" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 5, opacity: 0 }}>
+					<motion.div className="text-green-400 text-sm flex items-center" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 5, opacity: 0 }} transition={{ type: 'tween' }}>
 						<CheckIcon height={15} width={15} className="mr-1"/>
 						Saved
 					</motion.div>
