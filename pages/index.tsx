@@ -91,15 +91,18 @@ const Home: NextPage = () => {
 			
 			<AnimatePresence mode="popLayout">
 				{selectedTask && (
-					<motion.div
-						className="absolute bg-zinc-900 bg-opacity-75 top-0 left-0 h-screen w-screen z-10"
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						transition={{ type: 'keyframes' }}
-						onClick={() => setSelectedTask(undefined)}
-					/>
+					<>
+						<TaskModal task={selectedTask} setSelectedTask={setSelectedTask} mutate={mutate}/>
+						<motion.div
+							className="absolute bg-zinc-900 bg-opacity-75 top-0 left-0 h-screen w-screen z-10"
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							transition={{ type: 'keyframes' }}
+							onClick={() => setSelectedTask(undefined)}
+						/>
+					</>
 				)}
-				{selectedTask && <TaskModal task={selectedTask} setSelectedTask={setSelectedTask} mutate={mutate}/>}
 			</AnimatePresence>
 		</div>
 	);
